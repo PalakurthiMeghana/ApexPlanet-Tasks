@@ -1,0 +1,63 @@
+<!-- todo.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do App</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f0f0f0; }
+    h2 { color: #1a73e8; }
+    input, button { padding: 10px; margin-top: 10px; }
+    ul { padding-left: 20px; }
+    li { margin: 5px 0; }
+    button.remove { margin-left: 10px; background: red; color: white; border: none; }
+  </style>
+</head>
+<body>
+
+<h2>📋 To-Do List</h2>
+<input type="text" id="taskInput" placeholder="Enter task..." />
+<button onclick="addTask()">Add Task</button>
+<ul id="taskList"></ul>
+
+<script>
+  const taskInput = document.getElementById('taskInput');
+  const taskList = document.getElementById('taskList');
+
+  function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    taskList.innerHTML = '';
+    tasks.forEach((task, i) => {
+      const li = document.createElement('li');
+      li.textContent = task;
+      const btn = document.createElement('button');
+      btn.textContent = 'Remove';
+      btn.className = 'remove';
+      btn.onclick = () => removeTask(i);
+      li.appendChild(btn);
+      taskList.appendChild(li);
+    });
+  }
+
+  function addTask() {
+    const task = taskInput.value.trim();
+    if (!task) return alert("Task cannot be empty.");
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    taskInput.value = '';
+    loadTasks();
+  }
+
+  function removeTask(index) {
+    const tasks = JSON.parse(localStorage.getItem('tasks'));
+    tasks.splice(index, 1);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    loadTasks();
+  }
+
+  window.onload = loadTasks;
+</script>
+
+</body>
+</html>
