@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple E-Commerce</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🛒 Simple E-Commerce</h1>
+    <nav>
+      <button id="view-cart">View Cart (<span id="cart-count">0</span>)</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="filters">
+      <select id="category-filter">
+        <option value="all">All Categories</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Accessories">Accessories</option>
+        <option value="Fashion">Fashion</option>
+      </select>
+    </section>
+
+    <section id="product-list" class="grid"></section>
+  </main>
+
+  <script>
+    const products = [
+      {
+        id: 1,
+        name: "Wireless Headphones",
+        category: "Electronics",
+        price: 199,
+        image: "https://ptron.in/cdn/shop/products/51Bi92jvyDL._SL1100_544a234b-339e-44be-a2ae-b57b0ac66d86.jpg?v=1615793526",
+        description: "Noise-canceling headphones with 40-hour battery life."
+      },
+      {
+        id: 2,
+        name: "Smartphone Cases",
+        category: "Accessories",
+        price: 25,
+        image: "https://www.dailyobjects.com/blog/wp-content/uploads/2023/03/dl.beatsnoop.com-3000-dWPpbH9eTX-2.jpg",
+        description: "Durable and stylish case for smartphones."
+      },
+      {
+        id: 3,
+        name: "Hoodies",
+        category: "Fashion",
+        price: 350,
+        image: "https://shoezero.com/cdn/shop/articles/two_hoodies_a0f51bcf-680b-4820-b059-5b707facc4a8.webp?v=1747401867&width=2048",
+        description: "Cozy up in style. 🧥 Your perfect hoodie is just a tap away!"
+      },
+      {
+        id: 4,
+        name: "Jeans",
+        category: "Fashion",
+        price: 400,
+        image: "https://www.stitchfix.com/men/blog/wp-content/uploads/2017/03/20-12-17_SET_2_M_SLD-GRID_V3_1x1-scaled.jpeg",
+        description: "Denim that fits like a dream. 👖 Shop your new go-to pair now!"
+      }
+    ];
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCartDisplay() {
+      document.getElementById('cart-count').innerText = cart.length;
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function renderProducts(filter = 'all') {
+      const container = document.getElementById('product-list');
+      container.innerHTML = '';
+      const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+      filtered.forEach(product => {
+        const el = document.createElement('div');
+        el.className = 'product';
+        el.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>$${product.price}</p>
+          <button onclick="addToCart(${product.id})">Add to Cart</button>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      cart.push(product);
+      updateCartDisplay();
+    }
+
+    document.getElementById('category-filter').addEventListener('change', e => {
+      renderProducts(e.target.value);
+    });
+
+    document.getElementById('view-cart').addEventListener('click', () => {
+      alert(`Cart has ${cart.length} items. Checkout feature coming soon!`);
+    });
+
+    window.onload = () => {
+      renderProducts();
+      updateCartDisplay();
+    };
+  </script>
+</body>
+</html>
